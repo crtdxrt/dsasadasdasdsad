@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Retro Section - Astatine</title>
+<link rel="icon" type="image/png" href="A.png">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+  :root{
+    --bg-color:#1a1a2e;
+    --text-color:#fff;
+    --sidebar-bg:#111;
+    --accent-color:#9b59b6;
+    --overlay-bg:rgba(0,0,0,0.3);
+    --header-bg:rgba(17,17,17,0.9);
+    --card-bg:rgba(255,255,255,0.05);
+    --card-border:var(--accent-color);
+    --card-hover-shadow:rgba(155,89,182,0.8);
+    --particle-color:255,255,255;
+  }
+  body{background:var(--bg-color);color:var(--text-color);overflow-x:hidden;}
+  canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-3;}
+  .overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:var(--overlay-bg);backdrop-filter:blur(14px);z-index:-2;}
+
+  /* Sidebar */
+  .sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--sidebar-bg);
+    display:flex;flex-direction:column;align-items:center;padding-top:50px;z-index:2;
+    border-right:2px solid var(--accent-color);}
+  .logo{font-size:2em;font-weight:700;color:var(--accent-color);margin-bottom:30px;text-align:center;}
+  .sidebar button{width:160px;margin:10px 0;padding:10px 0;border:none;border-radius:10px;
+    font-weight:600;cursor:pointer;background:var(--accent-color);color:var(--text-color);transition:0.3s;}
+  .sidebar button:hover{background:linear-gradient(90deg,#fff 0%,var(--accent-color) 100%);color:#111;
+    box-shadow:0 0 15px var(--accent-color);}
+
+  /* Header */
+  .header-bar{position:fixed;top:0;left:220px;right:0;height:120px;background:var(--header-bg);
+    backdrop-filter:blur(10px);z-index:3;display:flex;flex-direction:column;justify-content:center;
+    padding:0 30px;border-bottom:2px solid var(--accent-color);}
+  .header-bar h1{font-size:2.2em;font-weight:700;color:var(--text-color);}
+  .header-bar p{font-size:1.1em;color:var(--text-color);}
+  .genre-buttons{margin-top:10px;}
+  .genre-buttons button{margin-right:10px;padding:6px 12px;border:none;border-radius:8px;
+    background:var(--accent-color);color:var(--text-color);font-weight:600;cursor:pointer;transition:0.3s;}
+  .genre-buttons button:hover{background:#fff;color:#000;}
+
+  /* Main */
+  .content{margin-left:240px;margin-top:140px;padding:20px;}
+  .section-title{font-size:1.6em;margin:25px 0 15px;color:var(--accent-color);}
+  .game-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;}
+  .game-card{background:var(--card-bg);border:2px solid var(--card-border);border-radius:20px;
+    padding:15px;text-align:center;transition:0.3s;cursor:pointer;}
+  .game-card:hover{transform:scale(1.05);border-color:#fff;box-shadow:0 0 20px var(--card-hover-shadow);}
+  .game-card img{width:180px;height:240px;object-fit:cover;border-radius:15px;}
+  .game-card p{margin-top:10px;font-weight:600;}
+
+  .credits{position:fixed;bottom:10px;left:240px;right:20px;background:var(--header-bg);
+    border:1px solid var(--accent-color);border-radius:15px;padding:10px 20px;
+    font-size:0.9em;text-align:center;z-index:5;}
+  .credits a{color:var(--accent-color);text-decoration:none;}
+  .credits a:hover{color:#fff;text-shadow:0 0 10px var(--accent-color);}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+<div class="overlay"></div>
+
+<div class="sidebar">
+  <div class="logo">Astatine</div>
+  <button onclick="window.location.href='index.html'">Home</button>
+  <button onclick="window.location.href='settings.html'">Settings</button>
+</div>
+
+<div class="header-bar">
+  <h1>Retro Games Library</h1>
+  <p>Choose a console below to browse classics.</p>
+  <div class="genre-buttons">
+    <button onclick="filterGenre('all')">All</button>
+    <button onclick="filterGenre('snes')">SNES</button>
+    <button onclick="filterGenre('nes')">NES</button>
+    <button onclick="filterGenre('sega')">SEGA</button>
+  </div>
+</div>
+
+<div class="content" id="content">
+  <div class="section-title">SNES</div>
+  <div class="game-grid" id="snes">
+    <div class="game-card" data-genre="snes">
+      <img src="spo.png" alt="Super Punch-Out!!">
+      <p>Super Punch-Out!!</p>
+    </div>
+    <div class="game-card" data-genre="snes">
+      <img src="smw.png" alt="Super Mario World">
+      <p>Super Mario World</p>
+    </div>
+  </div>
+
+  <div class="section-title">NES</div>
+  <div class="game-grid" id="nes">
+    <div class="game-card" data-genre="nes">
+      <img src="smb3.png" alt="Super Mario Bros 3">
+      <p>Super Mario Bros 3</p>
+    </div>
+    <div class="game-card" data-genre="nes">
+      <img src="zelda1.png" alt="The Legend of Zelda">
+      <p>The Legend of Zelda</p>
+    </div>
+  </div>
+
+  <div class="section-title">SEGA</div>
+  <div class="game-grid" id="sega">
+    <div class="game-card" data-genre="sega">
+      <img src="sonic1.png" alt="Sonic the Hedgehog">
+      <p>Sonic the Hedgehog</p>
+    </div>
+  </div>
+</div>
+
+<div class="credits">
+  © 2025 Astatine Project | Retro Section | Designed by
+  <a href="https://www.youtube.com/@crtdxrt" target="_blank">crtdxrt</a>
+</div>
+
+<script>
+  // Theme
+  const savedTheme = localStorage.getItem('theme');
+  if(savedTheme){
+    if(savedTheme==='default')document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme',savedTheme);
+  }
+
+  // Genre Filter
+  function filterGenre(genre){
+    const cards=document.querySelectorAll('.game-card');
+    if(genre==='all'){
+      cards.forEach(c=>c.style.display='block');
+    } else {
+      cards.forEach(c=>{
+        c.style.display=c.dataset.genre===genre?'block':'none';
+      });
+    }
+  }
+
+  // Particle Background
+  const canvas=document.getElementById('particles');
+  const ctx=canvas.getContext('2d');
+  canvas.width=innerWidth;canvas.height=innerHeight;
+  let particles=[];
+  for(let i=0;i<150;i++){
+    particles.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*3+1,
+      dx:(Math.random()-0.5)*1.2,
+      dy:(Math.random()-0.5)*1.2,
+      alpha:Math.random()*0.5+0.2,
+      phase:Math.random()*Math.PI*2
+    });
+  }
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const color=getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim();
+    particles.forEach(p=>{
+      p.phase+=0.02;
+      ctx.beginPath();
+      ctx.arc(p.x+Math.sin(p.phase)*5,p.y+Math.cos(p.phase)*5,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(${color},${p.alpha})`;
+      ctx.fill();
+      p.x+=p.dx;p.y+=p.dy;
+      if(p.x<0||p.x>canvas.width)p.dx*=-1;
+      if(p.y<0||p.y>canvas.height)p.dy*=-1;
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+  addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;});
+</script>
+</body>
+</html>
